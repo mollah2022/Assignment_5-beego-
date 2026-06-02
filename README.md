@@ -54,7 +54,7 @@ If you want this to persist, add the export line to your shell profile (`~/.bash
 
 ```bash
 git clone <your-repo-url>
-cd expense-tracker-api
+cd <cloned-folder-name>
 go mod download
 
 cp conf/app.conf.example conf/app.conf
