@@ -83,31 +83,63 @@ bee run -gendoc=true
 ### Health
 
 - `GET /api/v1/health`
+  - No authentication required
 
 ### Authentication
 
 - `POST /api/v1/auth/register`
+  - Required JSON body:
+    - `name` (string)
+    - `email` (string)
+    - `password` (string)
+
 - `POST /api/v1/auth/login`
+  - Required JSON body:
+    - `email` (string)
+    - `password` (string)
 
 ### Expenses
 
+All expense endpoints require the header:
+
+- `X-User-ID: <user-id>`
+
+Use this header for all expense routes below.
+
 - `POST /api/v1/expenses`
+  - Create a new expense
+  - Required JSON body:
+    - `title` (string)
+    - `amount` (number)
+    - `category` (string)
+    - `expense_date` (string, YYYY-MM-DD)
+    - `note` (string)
+
 - `GET /api/v1/expenses`
+  - List expenses for the user
+  - Optional filters:
+    - `category`
+    - `date_from` (YYYY-MM-DD)
+    - `date_to` (YYYY-MM-DD)
+    - `sort_by` (`amount` or `expense_date`)
+    - `sort_order` (`asc` or `desc`)
+    - `limit` (integer)
+
 - `GET /api/v1/expenses/summary`
+  - Get total spending summary for a date range
+  - Required query params:
+    - `date_from` (YYYY-MM-DD)
+    - `date_to` (YYYY-MM-DD)
+
 - `GET /api/v1/expenses/:id`
+  - Get one expense by ID
+
 - `PUT /api/v1/expenses/:id`
+  - Update an expense by ID
+  - Required JSON body same as create expense
+
 - `DELETE /api/v1/expenses/:id`
-
-### Expense list filters and sorting
-
-The `GET /api/v1/expenses` endpoint supports query parameters for filtering and sorting:
-
-- `category` — filter by category
-- `date_from` — start date (YYYY-MM-DD)
-- `date_to` — end date (YYYY-MM-DD)
-- `sort_by` — `amount` or `expense_date`
-- `sort_order` — `asc` or `desc`
-- `limit` — max results
+  - Delete an expense by ID
 
 ## Example Requests
 
@@ -147,6 +179,49 @@ curl -X POST http://localhost:8080/api/v1/expenses \
     "note": "Office lunch",
     "expense_date": "2026-06-02"
   }'
+```
+
+### List expenses
+
+```bash
+curl -X GET "http://localhost:8080/api/v1/expenses?category=Food&date_from=2026-06-01&date_to=2026-06-30&sort_by=amount&sort_order=asc&limit=20" \
+  -H "X-User-ID: 1"
+```
+
+### Get expense by ID
+
+```bash
+curl -X GET http://localhost:8080/api/v1/expenses/123 \
+  -H "X-User-ID: 1"
+```
+
+### Update expense
+
+```bash
+curl -X PUT http://localhost:8080/api/v1/expenses/123 \
+  -H "Content-Type: application/json" \
+  -H "X-User-ID: 1" \
+  -d '{
+    "title": "Dinner",
+    "amount": 18.00,
+    "category": "Food",
+    "note": "Team dinner",
+    "expense_date": "2026-06-02"
+  }'
+```
+
+### Delete expense
+
+```bash
+curl -X DELETE http://localhost:8080/api/v1/expenses/123 \
+  -H "X-User-ID: 1"
+```
+
+### Expense summary
+
+```bash
+curl -X GET "http://localhost:8080/api/v1/expenses/summary?date_from=2026-06-01&date_to=2026-06-30" \
+  -H "X-User-ID: 1"
 ```
 
 ## Swagger Documentation
