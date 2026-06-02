@@ -1,0 +1,426 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Expense Tracker API",
+        "description": "Personal Expense Tracker REST API built with Go and Beego v2\n",
+        "version": "1.0.0",
+        "contact": {
+            "email": "admin@example.com"
+        },
+        "license": {
+            "name": "Apache 2.0"
+        }
+    },
+    "basePath": "/api/v1",
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "description": "Login with email and password, returns user_id\n\u003cbr\u003e",
+                "operationId": "AuthController.Login",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Login payload",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} success"
+                    },
+                    "400": {
+                        "description": "{string} error"
+                    },
+                    "401": {
+                        "description": "{string} error"
+                    }
+                }
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "description": "Create a new user with name, email and password\n\u003cbr\u003e",
+                "operationId": "AuthController.Register",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Register payload",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{string} success"
+                    },
+                    "400": {
+                        "description": "{string} error"
+                    },
+                    "409": {
+                        "description": "{string} error"
+                    }
+                }
+            }
+        },
+        "/expenses/": {
+            "get": {
+                "tags": [
+                    "expenses"
+                ],
+                "description": "List all expenses with optional filters and sorting\n\u003cbr\u003e",
+                "operationId": "ExpenseController.List Expenses",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "X-User-ID",
+                        "description": "User ID from login",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "category",
+                        "description": "Filter by category",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "date_from",
+                        "description": "From date (YYYY-MM-DD)",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "date_to",
+                        "description": "To date (YYYY-MM-DD)",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sort_by",
+                        "description": "Sort by: amount or expense_date",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sort_order",
+                        "description": "Sort order: asc or desc",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Max results (default 10)",
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} success"
+                    },
+                    "401": {
+                        "description": "{string} error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "expenses"
+                ],
+                "description": "Add a new expense for the authenticated user\n\u003cbr\u003e",
+                "operationId": "ExpenseController.Create Expense",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "X-User-ID",
+                        "description": "User ID from login",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Expense payload",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.ExpenseCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{string} success"
+                    },
+                    "400": {
+                        "description": "{string} error"
+                    },
+                    "401": {
+                        "description": "{string} error"
+                    }
+                }
+            }
+        },
+        "/expenses/summary": {
+            "get": {
+                "tags": [
+                    "expenses"
+                ],
+                "description": "Get total spending summary for a date range\n\u003cbr\u003e",
+                "operationId": "ExpenseController.Expense Summary",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "X-User-ID",
+                        "description": "User ID from login",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "date_from",
+                        "description": "Start date (YYYY-MM-DD)",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "date_to",
+                        "description": "End date (YYYY-MM-DD)",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} success"
+                    },
+                    "400": {
+                        "description": "{string} error"
+                    },
+                    "401": {
+                        "description": "{string} error"
+                    }
+                }
+            }
+        },
+        "/expenses/{id}": {
+            "get": {
+                "tags": [
+                    "expenses"
+                ],
+                "description": "Get a single expense by its ID\n\u003cbr\u003e",
+                "operationId": "ExpenseController.Get One Expense",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "X-User-ID",
+                        "description": "User ID from login",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Expense ID",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} success"
+                    },
+                    "401": {
+                        "description": "{string} error"
+                    },
+                    "404": {
+                        "description": "{string} error"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "expenses"
+                ],
+                "description": "Update an existing expense by ID\n\u003cbr\u003e",
+                "operationId": "ExpenseController.Update Expense",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "X-User-ID",
+                        "description": "User ID from login",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Expense ID",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Expense payload",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.ExpenseUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} success"
+                    },
+                    "401": {
+                        "description": "{string} error"
+                    },
+                    "404": {
+                        "description": "{string} error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "expenses"
+                ],
+                "description": "Delete an expense by ID\n\u003cbr\u003e",
+                "operationId": "ExpenseController.Delete Expense",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "X-User-ID",
+                        "description": "User ID from login",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Expense ID",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} success"
+                    },
+                    "401": {
+                        "description": "{string} error"
+                    },
+                    "404": {
+                        "description": "{string} error"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "controllers.ExpenseCreateRequest": {
+            "title": "ExpenseCreateRequest",
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "expense_date": {
+                    "type": "string"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.ExpenseUpdateRequest": {
+            "title": "ExpenseUpdateRequest",
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "expense_date": {
+                    "type": "string"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.LoginRequest": {
+            "title": "LoginRequest",
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.RegisterRequest": {
+            "title": "RegisterRequest",
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "auth",
+            "description": "AuthController handles registration and login.\n"
+        },
+        {
+            "name": "expenses",
+            "description": "ExpenseController handles all expense operations.\n"
+        }
+    ]
+}

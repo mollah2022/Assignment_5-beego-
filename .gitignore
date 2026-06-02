@@ -1,0 +1,52 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Output of the go coverage tool
+coverage.out
+
+# Dependency directories
+vendor/
+
+# Go workspace file
+go.work
+
+# Directories created by the Go toolchain
+bin/
+/pkg/
+
+# VS Code settings
+.vscode/
+
+# macOS files
+.DS_Store
+
+# Linux trash
+.Trashes
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# Logs
+*.log
+
+# Keep conf files tracked
+conf/app.conf
+
+# Swagger generated docs are not ignored so Swagger UI can work from repo files
+
+# Database / data files
+data/*.csv
+
+# Environment files
+.env
+
+# Ignore any local IDE project files
+.idea/
