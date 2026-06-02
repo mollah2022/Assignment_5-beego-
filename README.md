@@ -53,8 +53,8 @@ If you want this to persist, add the export line to your shell profile (`~/.bash
 ## Run Locally
 
 ```bash
-git clone <your-repo-url>
-cd <cloned-folder-name>
+git clone https://github.com/mollah2022/Assignment_5-beego-.git
+cd Assignment_5-beego-
 go mod download
 
 cp conf/app.conf.example conf/app.conf
